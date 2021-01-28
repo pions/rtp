@@ -52,12 +52,6 @@ func TestOpusPayloader_Payload(t *testing.T) {
 		t.Fatal("Generated payload should be the 1")
 	}
 
-	// Negative MTU, small payload
-	res = pck.Payload(-1, payload)
-	if len(res) != 1 {
-		t.Fatal("Generated payload should be the 1")
-	}
-
 	// Positive MTU, small payload
 	res = pck.Payload(2, payload)
 	if len(res) != 1 {

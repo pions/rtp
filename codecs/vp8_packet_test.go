@@ -125,12 +125,6 @@ func TestVP8Payloader_Payload(t *testing.T) {
 		t.Fatal("Generated payload should be empty")
 	}
 
-	// Negative MTU, small payload
-	res = pck.Payload(-1, payload)
-	if len(res) != 0 {
-		t.Fatal("Generated payload should be empty")
-	}
-
 	// Positive MTU, small payload
 	res = pck.Payload(2, payload)
 	if len(res) != len(payload) {
