@@ -23,7 +23,7 @@ const (
 )
 
 // Payload fragments an VP9 packet across one or more byte arrays
-func (p *VP9Payloader) Payload(mtu int, payload []byte) [][]byte {
+func (p *VP9Payloader) Payload(mtu uint16, payload []byte) [][]byte {
 	/*
 	 * https://www.ietf.org/id/draft-ietf-payload-vp9-10.txt
 	 *
@@ -75,7 +75,7 @@ func (p *VP9Payloader) Payload(mtu int, payload []byte) [][]byte {
 		return [][]byte{}
 	}
 
-	maxFragmentSize := mtu - vp9HeaderSize
+	maxFragmentSize := int(mtu) - vp9HeaderSize
 	payloadDataRemaining := len(payload)
 	payloadDataIndex := 0
 

@@ -6,7 +6,7 @@ import (
 
 // Payloader payloads a byte array for use as rtp.Packet payloads
 type Payloader interface {
-	Payload(mtu int, payload []byte) [][]byte
+	Payload(mtu uint16, payload []byte) [][]byte
 }
 
 // Packetizer packetizes a payload
