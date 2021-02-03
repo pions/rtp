@@ -1138,6 +1138,60 @@ func TestRoundtrip(t *testing.T) {
 	}
 }
 
+func TestCloneHeader(t *testing.T) {
+	h := Header{
+		Marker:           true,
+		Extension:        true,
+		ExtensionProfile: 1,
+		Extensions: []Extension{
+			{0, []byte{
+				0xFF, 0xFF, 0xFF, 0xFF,
+			}},
+		},
+		Version:        2,
+		PayloadOffset:  20,
+		PayloadType:    96,
+		SequenceNumber: 27023,
+		Timestamp:      3653407706,
+		SSRC:           476325762,
+		CSRC:           []uint32{},
+	}
+	clone := h.Clone()
+	if !reflect.DeepEqual(h, clone) {
+		t.Errorf("Cloned clone does not match the original")
+	}
+
+	h.CSRC = append(h.CSRC, 1)
+	if len(clone.CSRC) == len(h.CSRC) {
+		t.Errorf("Expected CSRC to be unchanged")
+	}
+	h.Extensions[0].payload[0] = 0x1F
+	if clone.Extensions[0].payload[0] == 0x1F {
+		t.Errorf("Expected Extensions to be unchanged")
+	}
+}
+
+func TestClonePacket(t *testing.T) {
+	rawPkt := []byte{
+		0x90, 0xe0, 0x69, 0x8f, 0xd9, 0xc2, 0x93, 0xda, 0x1c, 0x64,
+		0x27, 0x82, 0xBE, 0xDE, 0x00, 0x01, 0x50, 0xAA, 0x00, 0x00,
+		0x98, 0x36, 0xbe, 0x88, 0x9e,
+	}
+	p := &Packet{
+		Payload: rawPkt[20:],
+		Raw:     rawPkt,
+	}
+
+	clone := p.Clone()
+	if !reflect.DeepEqual(p, clone) {
+		t.Errorf("Cloned Packet does not match the original")
+	}
+	p.Raw[0] = 0x1F
+	if clone.Raw[0] == 0x1F {
+		t.Errorf("Expected Raw to be unchanged")
+	}
+}
+
 func BenchmarkMarshal(b *testing.B) {
 	rawPkt := []byte{
 		0x90, 0x60, 0x69, 0x8f, 0xd9, 0xc2, 0x93, 0xda, 0x1c, 0x64,
