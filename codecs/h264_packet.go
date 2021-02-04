@@ -6,11 +6,16 @@ import (
 )
 
 // H264Payloader payloads H264 packets
-type H264Payloader struct{}
+type H264Payloader struct {
+	spsNalu []byte
+	ppsNalu []byte
+}
 
 const (
 	stapaNALUType = 24
 	fuaNALUType   = 28
+	spsNALUType   = 7
+	ppsNALUType   = 8
 
 	fuaHeaderSize       = 2
 	stapaHeaderSize     = 1
@@ -19,6 +24,8 @@ const (
 	naluTypeBitmask   = 0x1F
 	naluRefIdcBitmask = 0x60
 	fuaEndBitmask     = 0x40
+
+	outputStapAHeader = 0x78
 )
 
 func annexbNALUStartCode() []byte { return []byte{0x00, 0x00, 0x00, 0x01} }
@@ -73,8 +80,37 @@ func (p *H264Payloader) Payload(mtu int, payload []byte) [][]byte {
 		naluType := nalu[0] & naluTypeBitmask
 		naluRefIdc := nalu[0] & naluRefIdcBitmask
 
+		if naluType == spsNALUType {
+			p.spsNalu = nalu
+			return
+		}
+
+		if naluType == ppsNALUType {
+			p.ppsNalu = nalu
+			return
+		}
+
 		if naluType == 9 || naluType == 12 {
 			return
+		}
+
+		if p.spsNalu != nil && p.ppsNalu != nil {
+			stapANalu := []byte{outputStapAHeader}
+			spsLen := make([]byte, 2)
+			binary.BigEndian.PutUint16(spsLen, uint16(len(p.spsNalu)))
+			ppsLen := make([]byte, 2)
+			binary.BigEndian.PutUint16(ppsLen, uint16(len(p.ppsNalu)))
+			stapANalu = append(stapANalu, spsLen...)
+			stapANalu = append(stapANalu, p.spsNalu...)
+			stapANalu = append(stapANalu, ppsLen...)
+			stapANalu = append(stapANalu, p.ppsNalu...)
+			if len(stapANalu) <= mtu {
+				out := make([]byte, len(stapANalu))
+				copy(out, stapANalu)
+				payloads = append(payloads, out)
+			}
+			p.spsNalu = nil
+			p.ppsNalu = nil
 		}
 
 		// Single NALU
