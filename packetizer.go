@@ -6,7 +6,7 @@ import (
 
 // Payloader payloads a byte array for use as rtp.Packet payloads
 type Payloader interface {
-	Payload(mtu int, payload []byte) [][]byte
+	Payload(mtu uint16, payload []byte) [][]byte
 }
 
 // Packetizer packetizes a payload
@@ -16,7 +16,7 @@ type Packetizer interface {
 }
 
 type packetizer struct {
-	MTU              int
+	MTU              uint16
 	PayloadType      uint8
 	SSRC             uint32
 	Payloader        Payloader
@@ -30,7 +30,7 @@ type packetizer struct {
 }
 
 // NewPacketizer returns a new instance of a Packetizer for a specific payloader
-func NewPacketizer(mtu int, pt uint8, ssrc uint32, payloader Payloader, sequencer Sequencer, clockRate uint32) Packetizer {
+func NewPacketizer(mtu uint16, pt uint8, ssrc uint32, payloader Payloader, sequencer Sequencer, clockRate uint32) Packetizer {
 	return &packetizer{
 		MTU:         mtu,
 		PayloadType: pt,

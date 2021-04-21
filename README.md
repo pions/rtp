@@ -49,6 +49,7 @@ Check out the **[contributing wiki](https://github.com/pion/webrtc/wiki/Contribu
 * [Haiyang Wang](https://github.com/ocean2811)
 * [lxb](https://github.com/lxb531)
 * [debiandebiandebian](https://github.com/debiandebiandebian)
+* [Michael Uti](https://github.com/metaclips)
 
 ### License
 MIT License - see [LICENSE](LICENSE) for full text

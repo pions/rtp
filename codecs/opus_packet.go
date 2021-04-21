@@ -4,7 +4,7 @@ package codecs
 type OpusPayloader struct{}
 
 // Payload fragments an Opus packet across one or more byte arrays
-func (p *OpusPayloader) Payload(mtu int, payload []byte) [][]byte {
+func (p *OpusPayloader) Payload(mtu uint16, payload []byte) [][]byte {
 	if payload == nil {
 		return [][]byte{}
 	}

@@ -61,7 +61,7 @@ func emitNalus(nals []byte, emit func([]byte)) {
 }
 
 // Payload fragments a H264 packet across one or more byte arrays
-func (p *H264Payloader) Payload(mtu int, payload []byte) [][]byte {
+func (p *H264Payloader) Payload(mtu uint16, payload []byte) [][]byte {
 	var payloads [][]byte
 	if len(payload) == 0 {
 		return payloads
@@ -80,7 +80,7 @@ func (p *H264Payloader) Payload(mtu int, payload []byte) [][]byte {
 		}
 
 		// Single NALU
-		if len(nalu) <= mtu {
+		if len(nalu) <= int(mtu) {
 			out := make([]byte, len(nalu))
 			copy(out, nalu)
 			payloads = append(payloads, out)
@@ -88,7 +88,7 @@ func (p *H264Payloader) Payload(mtu int, payload []byte) [][]byte {
 		}
 
 		// FU-A
-		maxFragmentSize := mtu - fuaHeaderSize
+		maxFragmentSize := int(mtu) - fuaHeaderSize
 
 		// The FU payload consists of fragments of the payload of the fragmented
 		// NAL unit so that if the fragmentation unit payloads of consecutive

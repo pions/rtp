@@ -205,7 +205,7 @@ func TestVP9Payloader_Payload(t *testing.T) {
 
 	cases := map[string]struct {
 		b   [][]byte
-		mtu int
+		mtu uint16
 		res [][]byte
 	}{
 		"NilPayload": {
@@ -216,11 +216,6 @@ func TestVP9Payloader_Payload(t *testing.T) {
 		"SmallMTU": {
 			b:   [][]byte{{0x00, 0x00}},
 			mtu: 1,
-			res: [][]byte{},
-		},
-		"NegativeMTU": {
-			b:   [][]byte{{0x00, 0x00}},
-			mtu: -1,
 			res: [][]byte{},
 		},
 		"OnePacket": {
