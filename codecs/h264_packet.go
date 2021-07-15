@@ -165,12 +165,6 @@ func (p *H264Packet) doPackaging(nalu []byte) []byte {
 	return append(annexbNALUStartCode(), nalu...)
 }
 
-// IsDetectedFinalPacketInSequence returns true of the packet passed in has the
-// marker bit set indicated the end of a packet sequence
-func (p *H264Packet) IsDetectedFinalPacketInSequence(rtpPacketMarketBit bool) bool {
-	return rtpPacketMarketBit
-}
-
 // Unmarshal parses the passed byte slice and stores the result in the H264Packet this method is called upon
 func (p *H264Packet) Unmarshal(payload []byte) ([]byte, error) {
 	if payload == nil {

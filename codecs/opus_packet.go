@@ -19,12 +19,6 @@ type OpusPacket struct {
 	Payload []byte
 }
 
-// IsDetectedFinalPacketInSequence returns true as all opus packets are always
-// final in a sequence
-func (p *OpusPacket) IsDetectedFinalPacketInSequence(rtpPacketMarketBit bool) bool {
-	return true
-}
-
 // Unmarshal parses the passed byte slice and stores the result in the OpusPacket this method is called upon
 func (p *OpusPacket) Unmarshal(packet []byte) ([]byte, error) {
 	if packet == nil {

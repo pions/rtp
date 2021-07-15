@@ -117,12 +117,6 @@ type VP8Packet struct {
 	Payload []byte
 }
 
-// IsDetectedFinalPacketInSequence returns true of the packet passed in has the
-// marker bit set indicated the end of a packet sequence
-func (p *VP8Packet) IsDetectedFinalPacketInSequence(rtpPacketMarketBit bool) bool {
-	return rtpPacketMarketBit
-}
-
 // Unmarshal parses the passed byte slice and stores the result in the VP8Packet this method is called upon
 func (p *VP8Packet) Unmarshal(payload []byte) ([]byte, error) {
 	if payload == nil {
